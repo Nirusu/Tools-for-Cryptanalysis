@@ -279,8 +279,9 @@ def giveEquationsAESandSolve(rounds,keysize,related):
     dummy=KA[2]
     CXOR=KA[3]
  
+  print("SAGE - AES S-Box MILP - Rounds: ", rounds, ", KeySize: ", keysize, ", RelatedKey:", related)
   f = open('Eq-AES-With-'+str(rounds)+'-Rounds-RelatedKey-'+str(related)+str(keysize)+'.sage','w')
-  f.write("p = MixedIntegerLinearProgram(maximization=False, solver=\"Coin\")"+'\n')
+  f.write("p = MixedIntegerLinearProgram(maximization=False, solver=\"GLPK\")"+'\n')
   f.write("x = p.new_variable(binary=True)"+'\n')
   f.write("d = p.new_variable(binary=True)"+'\n')
   f.write('\n')
@@ -299,8 +300,12 @@ def giveEquationsAESandSolve(rounds,keysize,related):
     EqMC(CMC[i][0],CMC[i][1],CMC[i][2],CMC[i][3],CMC[i][4],CMC[i][5],CMC[i][6],CMC[i][7],CMC[i][8],f)
   f.write('\n')
   f.write("solution=p.solve()"+'\n')
-  f.write("print \"Minimal number of S-boxes:\", solution"+'\n')
+  f.write("print(\"Minimal number of S-boxes:\", solution)"+'\n')
   f.close()
-  execfile('Eq-AES-With-'+str(rounds)+'-Rounds-RelatedKey-'+str(related)+str(keysize)+'.sage')
+  print("Written script: ", 'Eq-AES-With-'+str(rounds)+'-Rounds-RelatedKey-'+str(related)+str(keysize)+'.sage')
+  print("Now executing...")
+  with open('Eq-AES-With-'+str(rounds)+'-Rounds-RelatedKey-'+str(related)+str(keysize)+'.sage') as f:
+    code = compile(f.read(), 'Eq-AES-With-'+str(rounds)+'-Rounds-RelatedKey-'+str(related)+str(keysize)+'.sage', 'exec')
+    exec(code)
 
-giveEquationsAESandSolve(10,256,false)
+giveEquationsAESandSolve(4,128,false)
